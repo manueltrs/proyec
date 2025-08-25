@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Finanzas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    /* Fondo con gradiente animado */
+    body {
+      background: linear-gradient(-45deg, #121212, #1a1a40, #0f2027, #2c5364);
+      background-size: 400% 400%;
+      animation: gradient 12s ease infinite;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    @keyframes gradient {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      text-shadow: 0 0 15px #00ffab;
+      margin-top: 20px;
+    }
+
+    .charts {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin: 30px auto;
+    }
+
+    .chart-box {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      width: 320px;
+      box-shadow: 0 0 20px rgba(0,255,171,0.2);
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    .chart-box h3 {
+      margin-bottom: 15px;
+      color: #00ffab;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .btn-glow {
+      display: inline-block;
+      padding: 12px 18px;
+      margin: 10px;
+      border-radius: 10px;
+      background: linear-gradient(45deg, #00ffab, #3a86ff);
+      color: #121212;
+      font-weight: bold;
+      text-decoration: none;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #00ffab, 0 0 20px #3a86ff;
+    }
+    .btn-glow:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #00ffab, 0 0 30px #3a86ff;
+    }
+
+    .stats-mini {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-around;
+      font-size: 1rem;
+      color: #ccc;
+    }
+    .stats-mini span { 
+      display: flex; 
+      align-items: center; 
+      gap: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>👋 Bienvenido, {{ username }}</h1>
+    <h2>📊 Resumen Financiero</h2>
+
+    <!-- SALDO -->
+    <div class="charts">
+      <div class="chart-box">
+        <h3>💰 Saldo Total</h3>
+        <p style="font-size: 2.5rem; color: #00ffab;">${{ balance }}</p>
+        <div class="stats-mini">
+          <span><i class="fa-solid fa-arrow-up"></i> Ingresos: ${{ ingresos }}</span>
+          <span><i class="fa-solid fa-arrow-down"></i> Egresos: ${{ total_egresos }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRÁFICO INGRESOS VS EGRESOS -->
+    <div class="charts">
+      <div class="chart-box">
+        <h3>📈 Ingresos vs Egresos</h3>
+        <canvas id="balanceChart" width="300" height="300"></canvas>
+      </div>
+
+      <!-- GRÁFICO DE GASTOS POR CATEGORÍA -->
+      <div class="chart-box">
+        <h3>📉 Gastos por Categoría</h3>
+        <canvas id="egresosChart" width="300" height="300"></canvas>
+      </div>
+    </div>
+
+    <!-- BOTONES -->
+    <a href="{{ url_for('home') }}" class="btn-glow"><i class="fa-solid fa-house"></i> Inicio</a>
+    <a href="{{ url_for('dashboard') }}" class="btn-glow"><i class="fa-solid fa-list"></i> Movimientos</a>
+    <a href="{{ url_for('logout') }}" class="btn-glow"><i class="fa-solid fa-door-open"></i> Cerrar Sesión</a>
+  </div>
+
+  <!-- JAVASCRIPT PARA LAS GRÁFICAS -->
+  <script>
+    const ingresos = { ingresos };
+    const egresosData = { egresos , safe };
+    const totalEgresos = Object.values(egresosData).reduce((a, b) => a + b, 0);
+
+    // 📊 Ingresos vs Egresos
+    const ctx1 = document.getElementById('balanceChart').getContext('2d');
+    new Chart(ctx1, {
+      type: 'doughnut',
+      data: {
+        labels: ['Ingresos', 'Egresos'],
+        datasets: [{
+          data: [ingresos, totalEgresos],
+          backgroundColor: ['#00ffab', '#ff4b5c']
+        }]
+      },
+      options: { plugins: { legend: { labels: { color: '#f0f0f0' } } } }
+    });
+
+    // 📊 Egresos por Categoría
+    const ctx2 = document.getElementById('egresosChart').getContext('2d');
+    new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(egresosData),
+        datasets: [{
+          data: Object.values(egresosData),
+          backgroundColor: ['#ff4b5c','#3a86ff','#ffbe0b','#8338ec','#00ffab']
+        }]
+      },
+      options: { plugins: { legend: { labels: { color: '#f0f0f0' } } } }
+    });
+  </script>
+</body>
+</html>
