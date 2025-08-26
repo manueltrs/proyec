@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Dashboard - Finanzas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+
+    <!-- Encabezado -->
+    <header class="header">
+        <h1>💸 Finanzas Personales</h1>
+        <h2>Bienvenido, {{ username }}</h2>
+        <h3>Balance actual: <span class="balance">${{ "%.2f"|format(balance) }}</span></h3>
+    </header>
+
+    <!-- Formulario de transacciones -->
+    <section class="form-section">
+        <div class="chart-box">
+            <h3 class="titulo-form">➕ Registrar Transacción</h3>
+            <form method="POST" class="row g-3">
+                <div class="col-md-6">
+                    <label for="tipo" class="form-label">Tipo</label>
+                    <select name="transaction_type" id="tipo" class="form-select" required>
+                        <option value="Gasto">Gasto</option>
+                        <option value="Ingreso">Ingreso</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="monto" class="form-label">Monto</label>
+                    <input type="number" step="0.01" name="amount" id="monto" class="form-control" required>
+                </div>
+
+                <div class="campo">
+                    <label for="descripcion">Descripción</label>
+                    <input type="text" name="description" id="descripcion" placeholder="Ej: Almuerzo, Recarga, Taxi" required>
+                </div>
+
+                <div class="campo">
+                    <label for="fecha">Fecha</label>
+                    <input type="date" name="date" id="fecha" value="{{ default_date }}" required>
+                </div>
+
+                <div class="campo">
+                    <label>Categoría</label>
+                    <div class="categoria-icons">
+                        <label>
+                            <input type="radio" name="category" value="Comida" required>
+                            <span title="Comida">🍔</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="category" value="Salario">
+                            <span title="Salario">💰</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="category" value="Transporte">
+                            <span title="Transporte">🚌</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="category" value="Ocio">
+                            <span title="Ocio">🎮</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="category" value="Hogar">
+                            <span title="Hogar">🏠</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="category" value="Salud">
+                            <span title="Salud">💊</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="acciones">
+                    <button type="submit" class="btn-glow">💾 Guardar</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Tabla de transacciones -->
+    <section class="tabla-section">
+        <div class="table-responsive">
+  <table class="table table-striped table-hover">
+      <thead class="table-dark">
+          <tr>
+              <th>ID</th><th>Fecha</th><th>Tipo</th><th>Categoría</th><th>Descripción</th><th>Monto</th><th>Acción</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for t in transactions %}
+          <tr>
+              <td>{{ t[0] }}</td>
+              <td>{{ t[6] }}</td>
+              <td>{{ t[5] }}</td>
+              <td>{{ t[4] }}</td>
+              <td>{{ t[3] }}</td>
+              <td>${{ "%.2f"|format(t[2]) }}</td>
+              <td><a href="{{ url_for('delete_transaction', trans_id=t[0]) }}" class="btn btn-sm btn-danger">❌</a></td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+</div>
+
+    </section>
+
+    <!-- Navegación -->
+    <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-3">
+        <a href="{{ url_for('home') }}" class="btn btn-primary">🏠 Inicio</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">🚪 Cerrar Sesión</a>
+        <a href="{{ url_for('exportar') }}" class="btn btn-success">📤 Exportar</a>
+    </div>
+
+</body>
+</html>
