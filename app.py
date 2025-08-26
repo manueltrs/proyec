@@ -52,35 +52,24 @@ def check_credentials(username, password):
 
 @app.route("/home")
 def home():
-    if "username" not in session:
-        return redirect(url_for("login"))
+    username = "1023"
+    balance = 1000000
+    ingresos = 1000000
+    egresos = {
+        "Alimentación": 200000,
+        "Transporte": 100000,
+        "Servicios": 150000,
+        "Ocio": 50000
+    }
+    return render_template(
+        "home.html",
+        username=username,
+        balance=balance,
+        ingresos=ingresos,
+        egresos=egresos,
+        total_egresos=sum(egresos.values())
+    )
 
-    username = session["username"]
-
-    conn = sqlite3.connect(DB_NAME)
-    cursor = conn.cursor()
-    cursor.execute("SELECT amount, type, category FROM transactions WHERE username=?", (username,))
-    rows = cursor.fetchall()
-    conn.close()
-
-    balance = 0
-    ingresos = 0
-    egresos_por_categoria = defaultdict(float)
-
-    for amount, ttype, category in rows:
-        if ttype == "Ingreso":
-            balance += amount
-            ingresos += amount
-        else:
-            balance -= amount
-            egresos_por_categoria[category] += amount
-
-    # Pasamos datos al template
-    return render_template("home.html",
-                           username=username,
-                           balance=balance,
-                           ingresos=ingresos,
-                           egresos=json.dumps(egresos_por_categoria))
 
 @app.route("/", methods=["GET", "POST"])
 def login():

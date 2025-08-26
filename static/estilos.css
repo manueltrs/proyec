@@ -95,6 +95,26 @@ h1, h2, h3 {
     font-size: 20px;
 }
 
+.charts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin: 30px auto;
+}
+
+.chart-box {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  width: 320px;
+  min-height: 300px;
+  box-shadow: 0 0 20px rgba(0,255,171,0.2);
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+
 /* ======== BALANCES ======== */
 .balance {
     font-size: 32px;
