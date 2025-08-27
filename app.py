@@ -56,9 +56,9 @@ def home():
     balance = 1000000
     ingresos = 1000000
     egresos = {
-        "Alimentación": 200000,
-        "Transporte": 100000,
-        "Servicios": 150000,
+        "Alimentación": 15000,
+        "Transporte": 20000,
+        "Hogar": 125000,
         "Ocio": 50000
     }
     return render_template(
