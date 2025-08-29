@@ -52,14 +52,15 @@ def check_credentials(username, password):
 
 @app.route("/home")
 def home():
-    username = "1023"
-    balance = 1000000
-    ingresos = 1000000
+    username = "manuel"
+    balance = 2339000
+    ingresos = 2520000
     egresos = {
         "Alimentación": 15000,
-        "Transporte": 20000,
-        "Hogar": 125000,
-        "Ocio": 50000
+        "Transporte": 50000,
+        "salud": 6000,
+        "Ocio": 50000,
+        "Hogar": 60000
     }
     return render_template(
         "home.html",
